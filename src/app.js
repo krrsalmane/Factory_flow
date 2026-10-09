@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { swaggerUi, swaggerSpec } = require('./config/swagger');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
@@ -16,7 +17,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/users', require('./routes/user.routes'));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req, res) => res.status(404).json({ status: 404, error: 'Route not found' }));
 app.use(errorHandler); 
 
