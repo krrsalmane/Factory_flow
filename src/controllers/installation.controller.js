@@ -14,3 +14,13 @@ exports.getStatus = async (req, res, next) => {
 
 }
 
+
+exports.install = async (req, res, next) => {
+
+    try{
+        const admin = await installationService.install(req.body);
+        res.status(201).json({ message: 'Application installed', admin})
+    }catch (error) {
+        next(error)
+    }
+}
