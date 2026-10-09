@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/user.repository');
 const AppError = require('../utils/AppError');
 
-exports.createUser = async ({ name, email, password, role }) => {
+exports.createUser = async ({ name, email, password, role }, session) => {
   const fields = [name, email, password];
   if (fields.some((f) => typeof f !== 'string' || !f.trim())) {
     throw new AppError('Name, email and password are required', 400);
@@ -18,7 +18,7 @@ exports.createUser = async ({ name, email, password, role }) => {
     email,
     password: await bcrypt.hash(password, 10), // never store the clear password
     role,
-  });
+  }, session);
 
   const { password: _hash, ...safeUser } = user.toObject(); // remove the hash from the response
   return safeUser;
