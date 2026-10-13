@@ -18,3 +18,5 @@ exports.findLowStock = () =>
 // Adds (or removes, with a negative number) stock
 exports.addStock = (id, quantity, session) =>
   Material.findByIdAndUpdate(id, { $inc: { quantity } }, { new: true, session });
+
+exports.findByIds = (ids) => Material.find({ _id: { $in: ids } });
