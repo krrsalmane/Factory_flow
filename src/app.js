@@ -24,6 +24,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/installation', require('./routes/installation.routes'));
 app.use('/api/materials', require('./routes/material.routes'));
+app.use('/api/products' , require('./routes/product.routes'))
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req, res) => res.status(404).json({ status: 404, error: 'Route not found' }));
