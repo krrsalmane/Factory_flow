@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const productController = require('../controllers/product.controller');
-const { authenticate, authorize } = require('../middlewares/auth.middleware');
+const { authenticate, authorize } = require('../middlewares/authenticate');
 
 // Everything here is for admins only
 router.use(authenticate, authorize('ADMIN'));

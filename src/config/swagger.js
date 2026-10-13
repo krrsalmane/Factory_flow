@@ -72,6 +72,46 @@ const options = {
             createdAt: { type: 'string', format: 'date-time' }
           }
         },
+        Order: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            product: { oneOf: [{ type: 'string' }, { type: 'object' }] },
+            quantity: { type: 'number', example: 10 },
+            status: { type: 'string', enum: ['PLANNED', 'IN_PROGRESS', 'COMPLETED', 'CANCELED'] },
+            composition: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  material: { type: 'string' },
+                  quantity: { type: 'number', example: 2 }
+                }
+              }
+            },
+            operator: { oneOf: [{ type: 'string' }, { type: 'object' }] },
+            createdBy: { oneOf: [{ type: 'string' }, { type: 'object' }] },
+            startedAt: { type: 'string', format: 'date-time', nullable: true },
+            completedAt: { type: 'string', format: 'date-time', nullable: true },
+            canceledAt: { type: 'string', format: 'date-time', nullable: true }
+          }
+        },
+        OrderInput: {
+          type: 'object',
+          required: ['product', 'quantity', 'operator'],
+          properties: {
+            product: { type: 'string', example: '665f1a2b3c4d5e6f78901234' },
+            quantity: { type: 'number', exclusiveMinimum: 0, example: 10 },
+            operator: { type: 'string', example: '665f1a2b3c4d5e6f78901234' }
+          }
+        },
+        OrderStatusUpdate: {
+          type: 'object',
+          required: ['status'],
+          properties: {
+            status: { type: 'string', enum: ['IN_PROGRESS', 'COMPLETED', 'CANCELED'] }
+          }
+        },
         Error: {
           type: 'object',
           properties: {

@@ -48,8 +48,6 @@ router.use(authenticate, authorize('ADMIN'));
  *       '500':
  *         description: Internal server error
  */
-router.get('/alerts', materialController.getAlerts);
-
 /**
  * @swagger
  * /api/materials:
