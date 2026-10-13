@@ -12,3 +12,7 @@ exports.getAll = catchAsync(async (req, res) => {
 exports.getOne = catchAsync(async (req, res) => {
   res.json(await productService.getProduct(req.params.id));
 });
+
+exports.update = catchAsync(async (req, res) => {
+  res.json(await productService.updateProduct(req.params.id, req.body));
+});
