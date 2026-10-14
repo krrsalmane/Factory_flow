@@ -60,4 +60,40 @@ exports.startOrder = async (orderId, operatorId) => {
     throw new AppError('Not enough stock: ' + missing.join(', '), 409);
   }
 
- 
+  // 3. Transaction: status + stock + movements are saved together, or nothing is saved
+  const session = await mongoose.startSession();
+  try {
+    await session.withTransaction(async () => {
+      // The order must still be planned (protects against two starts at the same time)
+      const started = await orderRepository.startOrder(orderId, session);
+      if (!started) throw new AppError('Only a planned order can be started', 409);
+
+      for (const line of order.composition) {
+        const needed = calculateNeeded(line, order);
+
+        // Removes the stock only if there is still enough
+        const material = await materialRepository.deductStock(line.material, needed, session);
+        if (!material) throw new AppError('Not enough stock, the order was not started', 409);
+
+        await stockMovementRepository.create(
+          { material: line.material, type: 'OUT', quantity: needed, order: orderId, user: operatorId },
+          session
+        );
+      }
+    });
+  } finally {
+    session.endSession();
+  }
+
+  return orderRepository.findById(orderId);
+};
+
+exports.completeOrder = async (orderId, operatorId) => {
+  const order = await getMyOrderOrFail(orderId, operatorId);
+
+  if (order.status !== 'IN_PROGRESS') {
+    throw new AppError('Only an order in progress can be completed', 409);
+  }
+
+  return orderRepository.update(orderId, { status: 'COMPLETED', completedAt: new Date() });
+};
