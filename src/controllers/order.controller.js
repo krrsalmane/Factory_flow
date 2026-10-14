@@ -6,13 +6,17 @@ exports.create = catchAsync(async (req, res) => {
 });
 
 exports.getAll = catchAsync(async (req, res) => {
-  res.json(await orderService.getOrders());
+  res.json(await orderService.getOrders(req.query));
 });
 
 exports.getOne = catchAsync(async (req, res) => {
   res.json(await orderService.getOrder(req.params.id));
 });
 
-exports.updateStatus = catchAsync(async (req, res) => {
-  res.json(await orderService.updateOrderStatus(req.params.id, req.body.status));
+exports.update = catchAsync(async (req, res) => {
+  res.json(await orderService.updateOrder(req.params.id, req.body));
+});
+
+exports.cancel = catchAsync(async (req, res) => {
+  res.json(await orderService.cancelOrder(req.params.id));
 });
