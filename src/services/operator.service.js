@@ -14,3 +14,24 @@ const getMyOrderOrFail = async (orderId, operatorId) => {
   }
   return order;
 };
+
+// Quantity needed of a material = quantity per unit x quantity to manufacture
+const calculateNeeded = (line, order) => Number((line.quantity * order.quantity).toFixed(6));
+
+exports.getMyOrders = (operatorId, status) => {
+  const filter = { operator: operatorId };
+
+  if (status !== undefined) {
+    if (!STATUSES.includes(status)) {
+      throw new AppError('Status must be PLANNED, IN_PROGRESS, COMPLETED or CANCELED', 400);
+    }
+    filter.status = status;
+  }
+
+  return orderRepository.findMany(filter, '-createdAt');
+};
+
+exports.getMyOrder = async (orderId, operatorId) => {
+  await getMyOrderOrFail(orderId, operatorId);
+  return orderRepository.findById(orderId);
+};
