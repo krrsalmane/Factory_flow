@@ -20,3 +20,11 @@ exports.addStock = (id, quantity, session) =>
   Material.findByIdAndUpdate(id, { $inc: { quantity } }, { new: true, session });
 
 exports.findByIds = (ids) => Material.find({ _id: { $in: ids } });
+
+// Removes stock only if there is enough. Returns null if there is not enough.
+exports.deductStock = (id, quantity, session) =>
+  Material.findOneAndUpdate(
+    { _id: id, quantity: { $gte: quantity } },
+    { $inc: { quantity: -quantity } },
+    { new: true, session }
+  );
