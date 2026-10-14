@@ -13,3 +13,6 @@ exports.findByReference = (reference) => Product.findOne({ reference });
 
 exports.update = (id, data) =>
   withMaterials(Product.findByIdAndUpdate(id, data, { new: true, runValidators: true }));
+
+// Without populate: the composition keeps the material ids (used to copy it into an order)
+exports.findRawById = (id) => Product.findById(id);

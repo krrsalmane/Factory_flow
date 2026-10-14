@@ -4,6 +4,11 @@ const { authenticate, authorize } = require('../middlewares/authenticate');
 
 router.use(authenticate, authorize('ADMIN'));
 
+
+router.patch('/:id/cancel', orderController.cancel);
+
+module.exports = router;
+
 /**
  * @swagger
  * tags:
