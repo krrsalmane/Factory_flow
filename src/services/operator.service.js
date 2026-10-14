@@ -35,3 +35,29 @@ exports.getMyOrder = async (orderId, operatorId) => {
   await getMyOrderOrFail(orderId, operatorId);
   return orderRepository.findById(orderId);
 };
+
+exports.getMyHistory = (operatorId) =>
+  orderRepository.findMany({ operator: operatorId, status: 'COMPLETED' }, '-completedAt');
+
+exports.startOrder = async (orderId, operatorId) => {
+  const order = await getMyOrderOrFail(orderId, operatorId);
+
+  // 1. Only a planned order can be started (a second start is refused here)
+  if (order.status !== 'PLANNED') {
+    throw new AppError('Only a planned order can be started', 409);
+  }
+
+  // 2. Check the stock BEFORE changing anything, and list what is missing
+  const missing = [];
+  for (const line of order.composition) {
+    const material = await materialRepository.findById(line.material);
+    const needed = calculateNeeded(line, order);
+    if (material.quantity < needed) {
+      missing.push(`${material.name} (needed ${needed}, available ${material.quantity})`);
+    }
+  }
+  if (missing.length > 0) {
+    throw new AppError('Not enough stock: ' + missing.join(', '), 409);
+  }
+
+ 
