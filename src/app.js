@@ -20,10 +20,13 @@ app.get('/api/health', (req, res) => {
   res.json({ api: 'ok', database: states[mongoose.connection.readyState] });
 });
 
+
+
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/installation', require('./routes/installation.routes'));
 app.use('/api/materials', require('./routes/material.routes'));
+app.use('/api/operator/orders', require('./routes/operator.routes'))
 app.use('/api/products', require('./routes/product.routes'));
 app.use('/api/orders', require('./routes/order.routes'));
 
