@@ -20,3 +20,16 @@ exports.count = (filter) => Order.countDocuments(filter);
 
 exports.update = (id, data) =>
   withDetails(Order.findByIdAndUpdate(id, data, { new: true, runValidators: true }));
+
+// Without populate: composition keeps the material ids, operator keeps the user id
+exports.findRawById = (id) => Order.findById(id);
+
+exports.findMany = (filter, sort) => withDetails(Order.find(filter).sort(sort));
+
+// Changes PLANNED -> IN_PROGRESS. Returns null if the order is not PLANNED any more.
+exports.startOrder = (id, session) =>
+  Order.findOneAndUpdate(
+    { _id: id, status: 'PLANNED' },
+    { status: 'IN_PROGRESS', startedAt: new Date() },
+    { new: true, session }
+  );
