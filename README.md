@@ -326,4 +326,4 @@ A complete scenario to try the API (Postman or any HTTP client):
 
 ## Author
 
-Your name, your school or company, year.
+Salmane Karroum, Youcode, 2026.
